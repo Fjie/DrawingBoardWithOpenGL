@@ -6,14 +6,10 @@ package me.fanjie.drawingboardwithopengl.drawable;
  * @date: 2016/12/10 15:08
  */
 
-public class Cube implements MyDrawable {
+public class Cube  {
 
     public Cube() {
 
     }
 
-    @Override
-    public void draw(float[] matrix) {
-
-    }
 }
