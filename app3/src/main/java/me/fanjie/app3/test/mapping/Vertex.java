@@ -1,10 +1,13 @@
-package me.fanjie.drawingboardwithopengl.models;
+package me.fanjie.app3.test.mapping;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 /**
  * Created by dell on 2016/12/17.
  */
 
-public class Vertex {
+public class Vertex{
 
     public float x;
     public float y;
@@ -19,6 +22,10 @@ public class Vertex {
         this.x = x;
         this.y = y;
         this.position = position;
+    }
+
+    public void drawCircle(Canvas canvas, float radius, Paint paint){
+        canvas.drawCircle(x, y, radius, paint);
     }
 
 
@@ -38,4 +45,5 @@ public class Vertex {
                 ", position=" + position +
                 '}';
     }
+
 }

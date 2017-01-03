@@ -1,6 +1,7 @@
 package me.fanjie.drawingboardwithopengl.models;
 
-import me.fanjie.drawingboardwithopengl.drawable.IDrawable;
+import me.fanjie.drawingboardwithopengl.test.mapping.Vertex;
+import me.fanjie.drawingboardwithopengl.test.renderer.IDrawable;
 
 import static me.fanjie.drawingboardwithopengl.BMath.getL;
 
@@ -29,6 +30,11 @@ public class ShapeEdge implements IDrawable {
 
     @Override
     public void drawing() {
+
+    }
+
+    @Override
+    public void putVertexCoords(float[] coords) {
 
     }
 

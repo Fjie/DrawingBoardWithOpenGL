@@ -12,7 +12,7 @@ public class C {
                     "}";
 
     public static final String fragmentShaderCode =
-                    "precision mediump float;" +
+            "precision mediump float;" +
                     "uniform vec4 vColor;" +
                     "void main() {" +
                     "  gl_FragColor = vColor;" +

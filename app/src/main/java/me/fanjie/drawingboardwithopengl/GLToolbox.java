@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.fanjie.drawingboardwithopengl.drawable;
+package me.fanjie.drawingboardwithopengl;
 
 import android.opengl.GLES20;
 

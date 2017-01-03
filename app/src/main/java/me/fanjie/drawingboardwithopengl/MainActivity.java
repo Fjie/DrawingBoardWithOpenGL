@@ -35,14 +35,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addGap(View view) {
-        surfaceView.myGLRenderer.shape.addGap();
+        surfaceView.myGLRenderer.variableShape.addGap();
     }
 
     public void removeOrthogonality(View view) {
-        surfaceView.myGLRenderer.shape.removeOrthogonality();
+        surfaceView.myGLRenderer.variableShape.removeOrthogonality();
     }
 
     public void recreate(View view) {
-        surfaceView.myGLRenderer.shape.clear();
+        surfaceView.myGLRenderer.variableShape.clear();
     }
 }

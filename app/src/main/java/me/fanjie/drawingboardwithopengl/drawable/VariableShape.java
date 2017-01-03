@@ -13,7 +13,8 @@ import java.util.List;
 
 import me.fanjie.drawingboardwithopengl.ToastUtils;
 import me.fanjie.drawingboardwithopengl.models.ShapeEdge;
-import me.fanjie.drawingboardwithopengl.models.Vertex;
+import me.fanjie.drawingboardwithopengl.test.mapping.Vertex;
+import me.fanjie.drawingboardwithopengl.test.renderer.IDrawable;
 
 import static me.fanjie.drawingboardwithopengl.BMath.getL;
 import static me.fanjie.drawingboardwithopengl.BMath.getS;
@@ -26,16 +27,19 @@ import static me.fanjie.drawingboardwithopengl.OpenGLUtlis.loadShader;
  */
 
 public class VariableShape implements IDrawable, IDeformation {
-    private List<Vertex> vertexList;
-    private LinkedHashSet<ShapeEdge> shapeEdges;
+//    绘制相关域
     private FloatBuffer vertexBuffer;
+    private int mProgram;
+    private float color[] = {1f, 1f, 1f, 1f};
+//    图形相关域
+    private List<Vertex> vertexList;
     private Vertex holder;
+//    逻辑相关域
+    private LinkedHashSet<ShapeEdge> shapeEdges;
     private ShapeEdge edgeHolder;
     //    是否正交
     private boolean orthogonality;
 
-    private float color[] = {1f, 1f, 1f, 1f};
-    private int mProgram;
 
 
     public VariableShape() {
@@ -236,6 +240,11 @@ public class VariableShape implements IDrawable, IDeformation {
         GLES20.glLineWidth(10);
         GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, vertexList.size());
         GLES20.glDisableVertexAttribArray(mPositionHandle);
+
+    }
+
+    @Override
+    public void putVertexCoords(float[] coords) {
 
     }
 

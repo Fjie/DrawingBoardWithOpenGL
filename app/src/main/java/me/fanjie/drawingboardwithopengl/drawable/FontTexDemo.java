@@ -13,6 +13,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 
+import me.fanjie.drawingboardwithopengl.GLToolbox;
+import me.fanjie.drawingboardwithopengl.test.renderer.IDrawable;
+
 import static me.fanjie.drawingboardwithopengl.C.FRAGMENT_SHADER;
 import static me.fanjie.drawingboardwithopengl.C.VERTEX_SHADER;
 
@@ -71,8 +74,7 @@ public class FontTexDemo implements IDrawable, IDeformation {
         mProgram = GLToolbox.createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
 
         // Bind attributes and uniforms
-        mTexSamplerHandle = GLES20.glGetUniformLocation(mProgram,
-                "tex_sampler");
+        mTexSamplerHandle = GLES20.glGetUniformLocation(mProgram,"tex_sampler");
         mTexCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_texcoord");
         mPosCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_position");
 
@@ -119,7 +121,6 @@ public class FontTexDemo implements IDrawable, IDeformation {
         GLToolbox.checkGlError("glUseProgram");
 
         // Set viewport
-        // FIXME: 2016/12/20
         GLES20.glViewport(0, 0, mViewWidth, mViewHeight);
         GLToolbox.checkGlError("glViewport");
 
@@ -189,8 +190,13 @@ public class FontTexDemo implements IDrawable, IDeformation {
 
     @Override
     public void drawing() {
-        renderTexture(mTextures[1]);
         renderTexture(mTextures[0]);
+        renderTexture(mTextures[1]);
+    }
+
+    @Override
+    public void putVertexCoords(float[] coords) {
+
     }
 
     @Override

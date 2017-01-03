@@ -33,17 +33,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
         float y = toY(event.getY());
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:{
-                myGLRenderer.shape.down(x,y);
+                myGLRenderer.variableShape.down(x,y);
                 myGLRenderer.fontTexDemo.down(x,y);
                 break;
             }
             case MotionEvent.ACTION_MOVE:{
-                myGLRenderer.shape.move(x,y);
+                myGLRenderer.variableShape.move(x,y);
                 myGLRenderer.fontTexDemo.move(x,y);
                 break;
             }
             case MotionEvent.ACTION_UP:{
-                myGLRenderer.shape.up(x,y);
+                myGLRenderer.variableShape.up(x,y);
                 myGLRenderer.fontTexDemo.up(x,y);
                 break;
             }
