@@ -109,29 +109,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="gone">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="addEdgeLabel"
-            android:text="边线标注" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="addHorLabel"
-            android:text="水平标注" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addEdgeLabel"
+                android:text="边线标注" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="addVerLabel"
-            android:text="垂直标注" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addHorLabel"
+                android:text="水平标注" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addVerLabel"
+                android:text="垂直标注" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:digits="0123456789"
+                android:id="@+id/et_input_label_size"
+                android:hint="请据实输入您的尺寸"
+                android:layout_weight="1" />
+
+            <Button
+                android:onClick="setLabelSize"
+                android:text="确定"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -143,13 +171,43 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_add_sign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
         <Button
+            android:text="挡水"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="addBarShape"
-            android:text="一字型" />
+            android:onClick="addDownWall"
+            android:layout_weight="1" />
 
+        <Button
+            android:text="下垂"
+            android:onClick="addUpWall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <Button
+            android:text="灶中"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addKitchen"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="盆中"
+            android:onClick="addBasin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
     </LinearLayout>
 
 

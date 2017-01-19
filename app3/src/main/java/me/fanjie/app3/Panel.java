@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import me.fanjie.app3.test.mapping.Mapper;
+import me.fanjie.app3.mapping.MapHelper;
 
 /**
  * Created by dell on 2016/12/29.
@@ -24,11 +24,16 @@ public class Panel extends View {
         super(context, attrs);
     }
 
-    private Mapper mapper;
+    private MapHelper mapHelper;
 
 
-    public void setMapper(@NonNull Mapper mapper) {
-        this.mapper = mapper;
+    public void setMapHelper(@NonNull MapHelper mapHelper) {
+        this.mapHelper = mapHelper;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
@@ -40,8 +45,8 @@ public class Panel extends View {
             Log.d("XXX", "px = " + px + ",py = " + py);
             canvas.scale(scale, scale, px, py);
         }
-        if (mapper != null) {
-            mapper.drawing(canvas);
+        if (mapHelper != null) {
+            mapHelper.drawing(canvas);
         }
     }
 
@@ -54,7 +59,7 @@ public class Panel extends View {
         if (event.getPointerCount() == 1 && !scaling) {
             float x = (event.getX() - dx2 - dx - px) / scale + px;
             float y = (event.getY() - dy2 - dy - py) / scale + py;
-            if (mapper.onPanelTouch(event.getAction(), x, y)) {
+            if (mapHelper.onPanelTouch(event.getAction(), x, y)) {
                 return true;
             }
         }
