@@ -1,18 +1,34 @@
 package me.fanjie.app3.entity;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.text.TextPaint;
 
-import me.fanjie.app3.mapping.PaintUtils;
+import me.fanjie.app3.mapping.DrawingOption;
+
+import static me.fanjie.app3.BMath.getL;
+import static me.fanjie.app3.BMath.getS;
 
 /**
  * Created by dell on 2016/12/24.
  */
 
-public class Edge {
+public class Edge extends MapEntity {
+
+    private static Paint edgePaint;
+    private static Paint holdenEdgePaint;
+
+    static {
+        edgePaint = new Paint(basePaint);
+        edgePaint.setStyle(Paint.Style.STROKE);
+        edgePaint.setColor(Color.BLACK);
+        edgePaint.setStrokeWidth(5);
+        holdenEdgePaint = new Paint(edgePaint);
+        holdenEdgePaint.setColor(Color.RED);
+        holdenEdgePaint.setStrokeWidth(10);
+    }
 
     public Vertex start;
     public Vertex stop;
@@ -42,18 +58,22 @@ public class Edge {
         path.moveTo(start.x, start.y);
         path.lineTo(stop.x, stop.y);
         canvas.drawPath(path, paint);
-        if(initSize){
+        if (initSize) {
             int l = 20;
-            RectF startRectF = new RectF(start.x - l,start.y - l,start.x + l,start.y+l);
-            RectF stopRectF = new RectF(stop.x - l,stop.y - l,stop.x + l,stop.y+l);
-            canvas.drawRect(startRectF,PaintUtils.getSetEdgeSizeChoseVertexPaint());
-            canvas.drawRect(stopRectF,PaintUtils.getSetEdgeSizeChoseVertexPaint());
+            RectF startRectF = new RectF(start.x - l, start.y - l, start.x + l, start.y + l);
+            RectF stopRectF = new RectF(stop.x - l, stop.y - l, stop.x + l, stop.y + l);
+            canvas.drawRect(startRectF, DrawingOption.getSetEdgeSizeChoseVertexPaint());
+            canvas.drawRect(stopRectF, DrawingOption.getSetEdgeSizeChoseVertexPaint());
         }
     }
 
-    public void drawLabel(Canvas canvas, Paint labelPaint, TextPaint textPaint) {
+    @Override
+    public void draw() {
+        canvas.drawLine(start.x, start.y, stop.x, stop.y, edgePaint);
+    }
+    public void drawLabel() {
         if (label != null) {
-            label.drawLabel(canvas, labelPaint, textPaint);
+            label.draw();
         }
     }
 
@@ -62,7 +82,6 @@ public class Edge {
             sideWall.draw(canvas, downPaint, upPaint);
         }
     }
-
     public Direction getDirection() {
         if (start.x == stop.x) {
             return Direction.VER;
@@ -87,7 +106,26 @@ public class Edge {
                 '}';
     }
 
-    public void setSize(int size, float x, float y) {
+    public boolean setSize(int size, float x, float y) {
+        if (getL(start.x, start.y, x, y) < 40) {
+            double v = Math.atan((start.x - stop.x) / (start.y - stop.y));
+            v = Math.abs(v);
+            float bc = (float) (size * Math.sin(v));
+            float ab = (float) (size * Math.cos(v));
+            start.x = start.x > stop.x ? stop.x + bc : stop.x - bc;
+            start.y = start.y > stop.y ? stop.y + ab : stop.y - ab;
+        } else if (getL(stop.x, stop.y, x, y) < 40) {
+            double v = Math.atan((stop.x - start.x) / (stop.y - start.y));
+            v = Math.abs(v);
+            float bc = (float) (size * Math.sin(v));
+            float ab = (float) (size * Math.cos(v));
+            stop.x = stop.x > start.x ? start.x + bc : start.x - bc;
+            stop.y = stop.y > start.y ? start.y + ab : start.y - ab;
+        } else {
+            return false;
+        }
+        initSize = false;
+        return true;
 
     }
 
@@ -95,6 +133,27 @@ public class Edge {
         this.initSize = initSize;
     }
 
+    @Override
+    public boolean hold(float x, float y) {
+        double s = getS(start.x, start.y, stop.x, stop.y, x, y);
+        double ac = getL(x, y, start.x, start.y);
+        double bc = getL(x, y, stop.x, stop.y);
+        double ab = getL(start.x, start.y, stop.x, stop.y);
+        return Math.abs(s) < 40 && ac < ab && bc < ab;
+    }
+
+    @Override
+    public void drawHolding() {
+        canvas.drawLine(start.x, start.y, stop.x, stop.y, holdenEdgePaint);
+    }
+
+    public void drawSettingSize(){
+        int l = 20;
+        RectF startRectF = new RectF(start.x - l, start.y - l, start.x + l, start.y + l);
+        RectF stopRectF = new RectF(stop.x - l, stop.y - l, stop.x + l, stop.y + l);
+        canvas.drawRect(startRectF, DrawingOption.getSetEdgeSizeChoseVertexPaint());
+        canvas.drawRect(stopRectF, DrawingOption.getSetEdgeSizeChoseVertexPaint());
+    }
 
     //    边线方向，横竖
     public enum Direction {

@@ -16,6 +16,8 @@ import static me.fanjie.app3.ToastUtils.showToast;
  */
 public class FormMapper extends BaseMapper implements IMapperFormApi {
 
+    private Edge holdenEdge;
+    private Vertex holdenVertex;
 
     public FormMapper(CMap cMap, Panel panel) {
         super(cMap, panel);
@@ -45,57 +47,65 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
     public boolean onTouch(int action, float x, float y) {
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                cMap.edgeHolder = null;
-                cMap.vertexHolder = null;
+                holdenVertex = null;
+                holdenEdge = null;
                 for (Vertex v : cMap.vertices) {
-                    holdVertex(v, x, y);
+                    if (v.hold(x, y)) {
+                        holdenVertex = v;
+                    }
                 }
-                if (cMap.vertexHolder == null) {
-                    for (Edge edge : cMap.edges) {
-                        holdEdge(edge, x, y);
+                if (holdenVertex == null) {
+                    for (Edge e : cMap.edges) {
+                        if (e.hold(x, y)) {
+                            holdenEdge = e;
+                        }
                     }
                 }
                 initDrawable();
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                if (cMap.vertexHolder != null) {
-                    cMap.vertexHolder.x = x;
-                    cMap.vertexHolder.y = y;
-                    cMap.vertexHolder.v.x = x;
-                    cMap.vertexHolder.h.y = y;
+                if (holdenVertex != null) {
+                    holdenVertex.x = x;
+                    holdenVertex.y = y;
+                    holdenVertex.v.x = x;
+                    holdenVertex.h.y = y;
 
-                } else if (cMap.edgeHolder != null) {
-                    if (cMap.edgeHolder.getDirection() == Edge.Direction.HOR) {
-                        cMap.edgeHolder.start.y = y;
-                        cMap.edgeHolder.stop.y = y;
-                    } else if (cMap.edgeHolder.getDirection() == Edge.Direction.VER) {
-                        cMap.edgeHolder.start.x = x;
-                        cMap.edgeHolder.stop.x = x;
+                } else if (holdenEdge != null) {
+                    if (holdenEdge.getDirection() == Edge.Direction.HOR) {
+                        holdenEdge.start.y = y;
+                        holdenEdge.stop.y = y;
+                    } else if (holdenEdge.getDirection() == Edge.Direction.VER) {
+                        holdenEdge.start.x = x;
+                        holdenEdge.stop.x = x;
                     }
                 }
                 initDrawable();
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
                 break;
             }
         }
-        return false;
+        return holdenVertex != null || holdenEdge != null;
+    }
+
+    @Override
+    public void drawing() {
+        super.drawing();
+        if (holdenVertex != null) {
+            holdenVertex.drawHolding();
+        } else if (holdenEdge != null) {
+            holdenEdge.drawHolding();
+        }
     }
 
     private void addVertexGap() {
         //        带方向的偏移量
-        double offsetX = cMap.vertexHolder.h.x - cMap.vertexHolder.x;
-        double offsetY = cMap.vertexHolder.v.y - cMap.vertexHolder.y;
+        double offsetX = holdenVertex.h.x - holdenVertex.x;
+        double offsetY = holdenVertex.v.y - holdenVertex.y;
 //        开缺后原顶点偏移
-        float dX = (float) (cMap.vertexHolder.x + offsetX / 3);
-        float dY = (float) (cMap.vertexHolder.y + offsetY / 3);
+        float dX = (float) (holdenVertex.x + offsetX / 3);
+        float dY = (float) (holdenVertex.y + offsetY / 3);
 
-        int position = cMap.vertexHolder.position;
+        int position = holdenVertex.position;
         int pervPosition;
         int nextPosition;
         if (position == 0) {
@@ -113,30 +123,30 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
 //            后一个顶点
         Vertex nextVertex;
 //            判断选中顶点的朝向，如果前一个顶点是水平邻居
-        if (prevVertex.equals(cMap.vertexHolder.h)) {
-            prevVertex = new Vertex(dX, cMap.vertexHolder.y, position);
-            nextVertex = new Vertex(cMap.vertexHolder.x, dY, position + 2);
+        if (prevVertex.equals(holdenVertex.h)) {
+            prevVertex = new Vertex(dX, holdenVertex.y, position);
+            nextVertex = new Vertex(holdenVertex.x, dY, position + 2);
         } else {
-            prevVertex = new Vertex(cMap.vertexHolder.x, dY, position);
-            nextVertex = new Vertex(dX, cMap.vertexHolder.y, position + 2);
+            prevVertex = new Vertex(holdenVertex.x, dY, position);
+            nextVertex = new Vertex(dX, holdenVertex.y, position + 2);
         }
         cMap.vertices.add(prevVertex.position, prevVertex);
         cMap.vertices.add(nextVertex.position, nextVertex);
-        cMap.vertexHolder.x = dX;
-        cMap.vertexHolder.y = dY;
+        holdenVertex.x = dX;
+        holdenVertex.y = dY;
         initMapping();
         initDrawable();
-        cMap.vertexHolder = null;
+        holdenVertex = null;
     }
 
     // 边线开缺
     private void addEdgeGap() {
-        Vertex start = cMap.edgeHolder.start;
-        Vertex stop = cMap.edgeHolder.stop;
+        Vertex start = holdenEdge.start;
+        Vertex stop = holdenEdge.stop;
         int position = start.position;
         float x1, x2, y1, y2;
         Vertex a, b, c, d;
-        if (cMap.edgeHolder.getDirection() == Edge.Direction.HOR) {
+        if (holdenEdge.getDirection() == Edge.Direction.HOR) {
             float hLength = (stop.x - start.x) / 3;
             float v1 = (start.v.y - start.y) / 3;
             float v2 = (stop.v.y - stop.y) / 3;
@@ -170,7 +180,7 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
         cMap.vertices.add(d.position, d);
         initMapping();
         initDrawable();
-        cMap.edgeHolder = null;
+        holdenEdge = null;
     }
 
     private void initMapping() {

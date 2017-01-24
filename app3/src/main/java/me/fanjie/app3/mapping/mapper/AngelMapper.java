@@ -12,28 +12,29 @@ import me.fanjie.app3.mapping.Interface.IMapperAngelApi;
  * Created by dell on 2017/1/18.
  */
 public class AngelMapper extends BaseMapper implements IMapperAngelApi{
+    private Vertex holdenVertex;
     public AngelMapper(CMap cMap, Panel panel) {
         super(cMap, panel);
     }
 
     @Override
     public boolean setAngel(int angel, Edge.Direction direction) {
-        if (cMap.vertexHolder != null) {
+        if (holdenVertex != null) {
             double a = (90 - angel) * (Math.PI / 180);
             if (direction == Edge.Direction.HOR) {
-                float ab = Math.abs(cMap.vertexHolder.h.x - cMap.vertexHolder.x);
-                float v = cMap.vertexHolder.v.y - cMap.vertexHolder.y;
+                float ab = Math.abs(holdenVertex.h.x - holdenVertex.x);
+                float v = holdenVertex.v.y - holdenVertex.y;
                 float pn = v / Math.abs(v);
                 double bc = ab * Math.tan(a) * pn;
-                cMap.vertexHolder.h.y = (float) (cMap.vertexHolder.y + bc);
+                holdenVertex.h.y = (float) (holdenVertex.y + bc);
             } else {
-                float ab = Math.abs(cMap.vertexHolder.v.y - cMap.vertexHolder.y);
-                float v = cMap.vertexHolder.h.x - cMap.vertexHolder.x;
+                float ab = Math.abs(holdenVertex.v.y - holdenVertex.y);
+                float v = holdenVertex.h.x - holdenVertex.x;
                 float pn = v / Math.abs(v);
                 double bc = ab * Math.tan(a) * pn;
-                cMap.vertexHolder.v.x = (float) (cMap.vertexHolder.x + bc);
+                holdenVertex.v.x = (float) (holdenVertex.x + bc);
             }
-            cMap.vertexHolder.setAngel(angel);
+            holdenVertex.setAngel(angel);
             initDrawable();
             return true;
         }
@@ -42,26 +43,23 @@ public class AngelMapper extends BaseMapper implements IMapperAngelApi{
 
     @Override
     public boolean onTouch(int action, float x, float y) {
-        switch (action){
-            case MotionEvent.ACTION_DOWN: {
-                cMap.edgeHolder = null;
-                cMap.vertexHolder = null;
+            if(action == MotionEvent.ACTION_DOWN){
+                holdenVertex = null;
                 for (Vertex v : cMap.vertices) {
-                    holdVertex(v, x, y);
+                    if(v.hold(x,y)){
+                        holdenVertex = v;
+                    }
                 }
                 initDrawable();
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
-                break;
             }
-            case MotionEvent.ACTION_MOVE: {
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
-                break;
-            }
+        return holdenVertex != null;
+    }
+
+    @Override
+    public void drawing() {
+        super.drawing();
+        if(holdenVertex != null){
+            holdenVertex.drawHolding();
         }
-        return false;
     }
 }

@@ -7,6 +7,5 @@ import me.fanjie.app3.entity.Label;
  */
 
 public interface IMapperLabelApi {
-    void addEdgeLabel();
     void addVertexLabel(Label.Type type);
 }

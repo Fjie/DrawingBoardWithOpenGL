@@ -1,6 +1,7 @@
 package me.fanjie.app3.entity;
 
-import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.TextPaint;
@@ -14,7 +15,30 @@ import static me.fanjie.app3.BMath.getL;
  * Created by dell on 2017/1/3.
  */
 
-public class Label {
+public class Label extends MapEntity {
+    private static Paint labelPaint;
+    private static Paint leadingLine;
+    private static Paint holdenLabelPaint;
+    private static Paint holdenLeadingLine;
+    private static TextPaint textPaint;
+    private static TextPaint holdenTextPaint;
+
+    static {
+        labelPaint= new Paint(basePaint);
+        labelPaint.setStyle(Paint.Style.STROKE);
+        labelPaint.setStrokeWidth(2);
+        leadingLine = new Paint(labelPaint);
+        leadingLine.setPathEffect(new DashPathEffect(new float[]{10, 20}, 0));
+        holdenLabelPaint = new Paint(labelPaint);
+        holdenLabelPaint.setColor(Color.RED);
+        holdenLeadingLine = new Paint(leadingLine);
+        holdenLeadingLine.setColor(Color.RED);
+        textPaint = new TextPaint();
+        textPaint.setTextSize(30);
+        holdenTextPaint = new TextPaint(textPaint);
+        holdenTextPaint.setColor(Color.RED);
+    }
+
     private Vertex start;
     private Vertex stop;
     private Type type;
@@ -182,22 +206,29 @@ public class Label {
         stopPath.moveTo(stop.x, stop.y);
         stopPath.lineTo(stopX, stopY);
     }
+    @Override
+    public boolean hold(float x, float y) {
+        float x1 = startX + (stopX - startX) / 2;
+        float y1 = startY + (stopY - startY) / 2;
+        return getL(x, y, x1, y1) < 50;
+    }
 
+    @Override
+    public void drawHolding() {
+        canvas.drawPath(mPath, holdenLabelPaint);
+        canvas.drawPath(startPath, type == Type.EDGE? holdenLabelPaint : holdenLeadingLine);
+        canvas.drawPath(stopPath,  type == Type.EDGE? holdenLabelPaint : holdenLeadingLine);
+        canvas.drawTextOnPath(String.valueOf(getLength()), mPath, getLength() / 2f - 50, -20, holdenTextPaint);
+    }
 
-    //    导线
-    public void drawLabel(Canvas canvas, Paint labelPaint, Paint leadingLine, TextPaint textPaint) {
-        if (leadingLine == null) {
-            leadingLine = labelPaint;
-        }
+    @Override
+    public void draw() {
         canvas.drawPath(mPath, labelPaint);
-        canvas.drawPath(startPath, leadingLine);
-        canvas.drawPath(stopPath, leadingLine);
+        canvas.drawPath(startPath, type == Type.EDGE?labelPaint:leadingLine);
+        canvas.drawPath(stopPath,  type == Type.EDGE?labelPaint:leadingLine);
         canvas.drawTextOnPath(String.valueOf(getLength()), mPath, getLength() / 2f - 50, -20, textPaint);
     }
 
-    public void drawLabel(Canvas canvas, Paint labelPaint, TextPaint textPaint) {
-        drawLabel(canvas, labelPaint, null, textPaint);
-    }
 
     public void drag(float x, float y) {
         switch (type) {
@@ -245,7 +276,6 @@ public class Label {
         float y1 = startY + (stopY - startY) / 2;
         return getL(x, y, x1, y1) < 50;
     }
-
 
     public enum Type {
         EDGE, HOR, VER

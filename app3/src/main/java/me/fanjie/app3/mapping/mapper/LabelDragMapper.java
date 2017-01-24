@@ -6,6 +6,7 @@ import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Label;
+import me.fanjie.app3.entity.Vertex;
 
 /**
  * Created by dell on 2017/1/18.
@@ -13,44 +14,60 @@ import me.fanjie.app3.entity.Label;
 
 public class LabelDragMapper extends BaseMapper {
 
+    private Label holdenLabel;
+
     public LabelDragMapper(CMap cMap, Panel panel) {
         super(cMap, panel);
+    }
+
+    @Override
+    public void drawing() {
+        for (Edge e : cMap.edges) {
+            e.draw();
+            e.drawLabel();
+        }
+        for (Vertex v : cMap.vertices) {
+            v.draw();
+        }
+        for (Label l : cMap.vertexLabels) {
+            l.draw();
+        }
+        if (holdenLabel != null) {
+            holdenLabel.drawHolding();
+        }
     }
 
     @Override
     public boolean onTouch(int action, float x, float y) {
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                cMap.edgeHolder = null;
-                cMap.vertexAssistHolder = null;
-                cMap.labelHolder = null;
-                cMap.vertexHolder = null;
+                holdenLabel = null;
                 for (Edge edge : cMap.edges) {
-                    holdLabel(edge.label, x, y);
+                    if (edge.label != null) {
+                        if (edge.label.hold(x, y)) {
+                            holdenLabel = edge.label;
+                        }
+                    }
                 }
-                if (cMap.labelHolder == null) {
+                if (holdenLabel == null) {
                     for (Label label : cMap.vertexLabels) {
-                        holdLabel(label, x, y);
+                        if (label.hold(x, y)) {
+                            holdenLabel = label;
+                        }
                     }
                 }
                 initDrawable();
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
                 break;
             }
-            case MotionEvent.ACTION_MOVE:{
-                if (cMap.labelHolder != null) {
-                    cMap.labelHolder.drag(x, y);
+            case MotionEvent.ACTION_MOVE: {
+                if (holdenLabel != null) {
+                    holdenLabel.drag(x, y);
                     initDrawable();
-                }
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
                 }
                 break;
             }
 
         }
-        return false;
+        return holdenLabel != null;
     }
 }

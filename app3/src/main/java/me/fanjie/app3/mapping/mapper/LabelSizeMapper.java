@@ -3,7 +3,6 @@ package me.fanjie.app3.mapping.mapper;
 import android.view.MotionEvent;
 
 import me.fanjie.app3.Panel;
-import me.fanjie.app3.ToastUtils;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Label;
@@ -14,12 +13,15 @@ import me.fanjie.app3.mapping.Interface.MapperCallback;
 
 /**
  * Created by dell on 2017/1/18.
- * TODO 设置边线长度的时候 不改变与临边的角度 类似正♂交拖动的算法
- * TODO 添加点击回调；将设置长度放到边线里面。比较符合操作习惯
  */
 
 public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapperLabelApi {
-    private Integer edgeSize;
+    private Edge holdenEdge;
+    private Edge settingSizeEdge;
+    private Vertex holdenVertex;
+    private Vertex assistHoldenVertex;
+
+    private int edgeSize;
 
     public LabelSizeMapper(CMap cMap, Panel panel, MapperCallback callback) {
         super(cMap, panel, callback);
@@ -30,97 +32,110 @@ public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapp
     }
 
     @Override
-    public void addEdgeLabel() {
-        if (cMap.edgeHolder != null) {
-            cMap.edgeHolder.initLabel();
-            initDrawable();
-        }
-    }
-
-    @Override
     public void addVertexLabel(Label.Type type) {
-        if (cMap.vertexHolder != null && cMap.vertexAssistHolder != null) {
-            cMap.vertexLabels.add(new Label(cMap.vertexHolder, cMap.vertexAssistHolder, type));
+        if (holdenVertex != null && assistHoldenVertex != null) {
+            cMap.vertexLabels.add(new Label(holdenVertex, assistHoldenVertex, type));
             initDrawable();
         }
     }
 
     @Override
     public boolean setSize(int length) {
-        if (cMap.edgeHolder != null) {
+        if (holdenEdge != null) {
+            settingSizeEdge = holdenEdge;
             edgeSize = length;
-            cMap.edgeHolder.setInitSize(true);
+            initDrawable();
             return true;
         }
         return false;
-    }
-
-    public boolean setSizeOld(int length) {
-
-        if (cMap.labelHolder != null) {
-            cMap.labelHolder.setLength(length);
-            for (Edge edge : cMap.edges) {
-                if (edge.label != null) {
-                    edge.initLabel();
-                }
-            }
-            for (Label label : cMap.vertexLabels) {
-                label.init();
-            }
-            initDrawable();
-            return true;
-        } else {
-            ToastUtils.showToast("您需要先选择一个标注再进行设置");
-            return false;
-        }
     }
 
     @Override
     public boolean onTouch(int action, float x, float y) {
-        switch (action) {
-            case MotionEvent.ACTION_DOWN: {
-                if (edgeSize != null) {
-                    cMap.edgeHolder.setSize(edgeSize, x, y);
-                    edgeSize = null;
-                }
-                cMap.edgeHolder = null;
-                cMap.vertexAssistHolder = null;
-                cMap.labelHolder = null;
-                if (cMap.vertexHolder != null) {
-                    for (Vertex v : cMap.vertices) {
-                        holdAssistVertex(v, x, y);
-                    }
-                }
-                if (cMap.vertexAssistHolder == null) {
-                    cMap.vertexHolder = null;
-                    for (Vertex v : cMap.vertices) {
-                        holdVertex(v, x, y);
-                    }
-                }
-
-                if (cMap.vertexHolder == null) {
-                    for (Edge edge : cMap.edges) {
-                        holdEdge(edge, x, y);
-                    }
-                    if (cMap.edgeHolder != null && callback != null) {
-                        callback.onEdgeClick(cMap.edgeHolder);
-                    }
-                }
-                initDrawable();
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
-                }
-                break;
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (settingSizeEdge != null) {
+                settingSize(x,y);
+            }else {
+                holdingEntity(x,y);
             }
-            case MotionEvent.ACTION_MOVE: {
-                if (cMap.vertexHolder != null || cMap.edgeHolder != null || cMap.labelHolder != null) {
-                    return true;
+            initDrawable();
+        }
+        return holdenVertex != null || holdenEdge != null;
+    }
+
+    private void holdingEntity(float x, float y) {
+        holdenEdge = null;
+        assistHoldenVertex = null;
+        if (holdenVertex != null) {
+            for (Vertex v : cMap.vertices) {
+                if (v.hold(x, y)) {
+                    assistHoldenVertex = v;
                 }
-                break;
             }
         }
-
-
-        return false;
+        if (assistHoldenVertex == null) {
+            holdenVertex = null;
+            for (Vertex v : cMap.vertices) {
+                if (v.hold(x, y)) {
+                    holdenVertex = v;
+                }
+            }
+        }
+        if (holdenVertex == null) {
+            for (Edge edge : cMap.edges) {
+                if (edge.hold(x, y)) {
+                    holdenEdge = edge;
+                }
+            }
+            if (holdenEdge != null && callback != null) {
+                callback.onEdgeClick(holdenEdge);
+            }
+        }
     }
+
+    private void settingSize(float x,float y) {
+        if (holdenEdge.setSize(edgeSize, x, y)) {
+            initLabel();
+        }
+        settingSizeEdge = null;
+        holdenEdge = null;
+    }
+
+    @Override
+    public void drawing() {
+        for (Edge e : cMap.edges) {
+            e.draw();
+            e.drawLabel();
+        }
+        for (Vertex v : cMap.vertices) {
+            v.draw();
+        }
+        for (Label l : cMap.vertexLabels) {
+            l.draw();
+        }
+        if (holdenEdge != null) {
+            holdenEdge.drawHolding();
+        }
+        if (holdenVertex != null) {
+            holdenVertex.drawHolding();
+        }
+        if (assistHoldenVertex != null) {
+            assistHoldenVertex.drawHolding();
+        }
+        if (settingSizeEdge != null) {
+            settingSizeEdge.drawSettingSize();
+        }
+    }
+
+    private void initLabel() {
+        for (Edge edge : cMap.edges) {
+            if (edge.label != null) {
+                edge.initLabel();
+            }
+        }
+        for (Label label : cMap.vertexLabels) {
+            label.init();
+        }
+    }
+
 }

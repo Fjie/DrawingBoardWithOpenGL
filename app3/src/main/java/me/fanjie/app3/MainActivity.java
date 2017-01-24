@@ -1,7 +1,10 @@
 package me.fanjie.app3;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         rgDir = (RadioGroup) findViewById(R.id.rg_direction);
         etInputAngel = (EditText) findViewById(R.id.et_input_angel);
         etInputLabelSize = (EditText) findViewById(R.id.et_input_label_size);
-        mapHelper = new MapHelper(panel,callback);
+        mapHelper = new MapHelper(panel, callback);
         steps = new ArrayList<>();
         titles = new ArrayList<>();
 //        操作
@@ -57,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
         steps.add(MapHelper.MappingStep.LABEL_SIZE);
         steps.add(MapHelper.MappingStep.LABEL_DRAG);
         steps.add(MapHelper.MappingStep.ADD_SIGN);
-        titles.add("形状设计");
-        titles.add("角度调整");
-        titles.add("尺寸调整");
-        titles.add("标注调整");
-        titles.add("添加标记");
+        titles.add("形状设计，选择顶点或边线开缺");
+        titles.add("角度调整，选择顶点输入角度选择贴合角度的边");
+        titles.add("尺寸调整，点击边线设置尺寸，选择两个顶点生成自由标注");
+        titles.add("标注调整，拖动标注");
+        titles.add("添加标记，选择边线设置挡水和下垂");
         operations.add(findViewById(R.id.ll_form));
         operations.add(findViewById(R.id.ll_angel));
         operations.add(findViewById(R.id.ll_size));
@@ -121,10 +124,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void addEdgeLabel(View view) {
-        mapHelper.getLabelApi().addEdgeLabel();
-    }
-
     public void addHorLabel(View view) {
         mapHelper.getLabelApi().addVertexLabel(HOR);
     }
@@ -159,9 +158,14 @@ public class MainActivity extends AppCompatActivity {
     private MapperCallback callback = new MapperCallback() {
         @Override
         public void onEdgeClick(Edge edge) {
-            // TODO: 2017/1/19 假装有弹窗并输入了长度
-            int input = 500;
-            mapHelper.getSizeApi().setSize(input);
+
+            showInputDialog("请输入尺寸，然后选择一个顶点来适应尺寸", new DialogInputCallback() {
+                @Override
+                public void input(int i) {
+                    mapHelper.getSizeApi().setSize(input);
+                }
+            });
+
         }
 
         @Override
@@ -169,4 +173,33 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private AlertDialog.Builder inputDialog;
+    private int input;
+
+    private void showInputDialog(String title, final DialogInputCallback callback) {
+        final EditText editText = new EditText(this);
+        editText.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
+        inputDialog = new AlertDialog.Builder(this);
+        inputDialog.setView(editText);
+        inputDialog.setTitle(title);
+        inputDialog.setNegativeButton("取消", null);
+        inputDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String s = editText.getText().toString();
+                if (!TextUtils.isEmpty(s)) {
+                    input = Integer.parseInt(s);
+                    callback.input(0);
+                }
+            }
+        });
+
+        inputDialog.show();
+
+    }
+
+    interface DialogInputCallback {
+        void input(int input);
+    }
 }

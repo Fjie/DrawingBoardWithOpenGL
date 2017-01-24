@@ -9,6 +9,7 @@ import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Label;
+import me.fanjie.app3.entity.MapEntity;
 import me.fanjie.app3.entity.Vertex;
 import me.fanjie.app3.mapping.Interface.IMapperAngelApi;
 import me.fanjie.app3.mapping.Interface.IMapperFormApi;
@@ -58,10 +59,10 @@ public class MapHelper {
                 return true;
             }
             case ANGEL: {
-                mapper = new AngelMapper(cMap,panel);
                 if (cMap.vertices.size() < 3) {
                     return false;
                 }
+                mapper = new AngelMapper(cMap,panel);
                 return true;
             }
             case LABEL_SIZE: {
@@ -86,47 +87,52 @@ public class MapHelper {
     }
 
     public void drawing(Canvas canvas) {
+        int size = cMap.vertices.size();
+        if (size < 3) {
+            return;
+        }
+        MapEntity.setCanvas(canvas);
+        mapper.drawing();
+    }
+    public void drawingOld(Canvas canvas) {
         Log.d("XXX", "cMap.vertices  = " + Arrays.toString(cMap.vertices.toArray()));
         int size = cMap.vertices.size();
         if (size < 3) {
             return;
         }
+        MapEntity.setCanvas(canvas);
+        mapper.drawing();
 
-        canvas.drawPath(cMap.shapePath, PaintUtils.getEdgePaint());
         for (Edge e : cMap.edges) {
-//            e.drawLine(canvas, edgePaint);
-            e.drawLabel(canvas, PaintUtils.getLabelPaint(), PaintUtils.getTextPaint());
-            e.drawSideWall(canvas, PaintUtils.getLabelPaint(), PaintUtils.getLeadingLine());
-        }
-
-        if (cMap.edgeHolder != null) {
-            cMap.edgeHolder.drawLine(canvas, PaintUtils.getHolderEdgePaint());
+            e.draw();
+//            e.drawLabel(canvas, DrawingOption.getLabelPaint(), DrawingOption.getTextPaint());
+            e.drawSideWall(canvas, DrawingOption.getLabelPaint(), DrawingOption.getLeadingLine());
         }
 
         for (Vertex v : cMap.vertices) {
-            v.drawAngel(canvas, 50, PaintUtils.getAngelPaint(), PaintUtils.getTextPaint());
+            v.draw();
         }
 
         if (cMap.vertexHolder != null) {
-            cMap.vertexHolder.drawCircle(canvas, 20, PaintUtils.getHolderVertexPaint());
+//            cMap.vertexHolder.drawCircle(canvas, 20, DrawingOption.getHolderVertexPaint());
         }
 
         if (cMap.vertexAssistHolder != null) {
-            cMap.vertexAssistHolder.drawCircle(canvas, 20, PaintUtils.getHolderVertexPaint());
+//            cMap.vertexAssistHolder.drawCircle(canvas, 20, DrawingOption.getHolderVertexPaint());
         }
 
         for (Label l : cMap.vertexLabels) {
-            l.drawLabel(canvas, PaintUtils.getLabelPaint(), PaintUtils.getLeadingLine(), PaintUtils.getTextPaint());
+//            l.drawLabel(canvas, DrawingOption.getLabelPaint(), DrawingOption.getLeadingLine(), DrawingOption.getTextPaint());
         }
 
         if (cMap.labelHolder != null) {
-            cMap.labelHolder.drawLabel(canvas, PaintUtils.getHolderLabelPaint(), PaintUtils.getHolderLeadingLine(), PaintUtils.getHolderTextPaint());
+//            cMap.labelHolder.drawLabel(canvas, DrawingOption.getHolderLabelPaint(), DrawingOption.getHolderLeadingLine(), DrawingOption.getHolderTextPaint());
         }
-        if(cMap.kitChen!=null){
-            cMap.kitChen.draw(canvas, PaintUtils.getEdgePaint());
+        if(cMap.pointSignKitChen !=null){
+            cMap.pointSignKitChen.draw(canvas, DrawingOption.getEdgePaint());
         }
-        if(cMap.basin != null){
-            cMap.basin.draw(canvas, PaintUtils.getEdgePaint(), PaintUtils.getLeadingLine());
+        if(cMap.pointSignBasin != null){
+            cMap.pointSignBasin.draw(canvas, DrawingOption.getEdgePaint(), DrawingOption.getLeadingLine());
         }
 
     }

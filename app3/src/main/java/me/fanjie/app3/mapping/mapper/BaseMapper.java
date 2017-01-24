@@ -23,6 +23,7 @@ public abstract class BaseMapper {
         this.cMap = cMap;
         this.panel = panel;
         this.callback = callback;
+        initDrawable();
     }
 
     public BaseMapper(CMap cMap, Panel panel) {
@@ -42,6 +43,16 @@ public abstract class BaseMapper {
         }
         cMap.shapePath.close();
         panel.invalidate();
+    }
+
+    public void drawing(){
+        for (Edge e : cMap.edges) {
+            e.draw();
+        }
+
+        for (Vertex v : cMap.vertices) {
+            v.draw();
+        }
     }
 
     //   顶点选择

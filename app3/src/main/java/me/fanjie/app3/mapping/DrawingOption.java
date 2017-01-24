@@ -9,15 +9,16 @@ import android.text.TextPaint;
  * Created by dell on 2017/1/18.
  */
 
-public class PaintUtils {
+public class DrawingOption {
 
     private static Paint angelPaint;
     private static Paint edgePaint;
-    private static Paint holderVertexPaint;
     private static Paint setEdgeSizeChoseVertexPaint;
-    private static Paint holderEdgePaint;
     private static Paint labelPaint;
     private static Paint leadingLine;
+
+    private static Paint holderEdgePaint;
+    private static Paint holderVertexPaint;
     private static Paint holderLabelPaint;
     private static Paint holderLeadingLine;
     private static TextPaint textPaint;
@@ -38,8 +39,11 @@ public class PaintUtils {
         holderEdgePaint.setStrokeWidth(10);
         holderVertexPaint = new Paint(holderEdgePaint);
         holderVertexPaint.setStyle(Paint.Style.FILL);
+
+
         setEdgeSizeChoseVertexPaint = new Paint(holderVertexPaint);
         setEdgeSizeChoseVertexPaint.setColor(Color.GREEN);
+
         labelPaint = new Paint(edgePaint);
         labelPaint.setStrokeWidth(2);
         leadingLine = new Paint(labelPaint);
@@ -48,11 +52,13 @@ public class PaintUtils {
         holderLabelPaint.setColor(Color.RED);
         holderLeadingLine = new Paint(leadingLine);
         holderLeadingLine.setColor(Color.RED);
+
         textPaint = new TextPaint();
-        textPaint.setTextSize(30);
+        textPaint.setTextSize(50);
         holderTextPaint = new TextPaint(textPaint);
         holderTextPaint.setColor(Color.RED);
     }
+
 
     public static Paint getSetEdgeSizeChoseVertexPaint() {
         return setEdgeSizeChoseVertexPaint;
@@ -70,9 +76,6 @@ public class PaintUtils {
         return holderVertexPaint;
     }
 
-    public static Paint getHolderEdgePaint() {
-        return holderEdgePaint;
-    }
 
     public static Paint getLabelPaint() {
         return labelPaint;

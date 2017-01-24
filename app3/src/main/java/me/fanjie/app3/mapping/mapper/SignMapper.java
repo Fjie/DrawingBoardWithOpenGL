@@ -3,10 +3,10 @@ package me.fanjie.app3.mapping.mapper;
 import android.view.MotionEvent;
 
 import me.fanjie.app3.Panel;
-import me.fanjie.app3.entity.Basin;
+import me.fanjie.app3.entity.PointSignBasin;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
-import me.fanjie.app3.entity.KitChen;
+import me.fanjie.app3.entity.PointSignKitChen;
 import me.fanjie.app3.entity.SideWall;
 import me.fanjie.app3.mapping.Interface.IMapperSignApi;
 
@@ -47,13 +47,13 @@ public class SignMapper extends BaseMapper implements IMapperSignApi {
                 cMap.labelHolder = null;
                 cMap.edgeHolder = null;
                 if (addKitChen) {
-                    cMap.kitChen = new KitChen(x, y);
+                    cMap.pointSignKitChen = new PointSignKitChen(x, y);
                     addKitChen = false;
                     initDrawable();
                     break;
                 }
                 if (addBasin) {
-                    cMap.basin = new Basin(x, y, 300, 150, 35);
+                    cMap.pointSignBasin = new PointSignBasin(x, y, 300, 150, 35);
                     addBasin = false;
                     initDrawable();
                     break;
