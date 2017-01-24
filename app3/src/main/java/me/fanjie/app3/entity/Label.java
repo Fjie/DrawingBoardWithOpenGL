@@ -7,13 +7,15 @@ import android.graphics.Path;
 import android.text.TextPaint;
 
 import me.fanjie.app3.ShapeUtils;
-import me.fanjie.app3.mapping.MapHelper;
 
 import static me.fanjie.app3.BMath.getL;
+import static me.fanjie.app3.entity.CMap.shapePath;
 
 /**
  * Created by dell on 2017/1/3.
  */
+
+// TODO: 2017/1/24 还有可优化的地方：算法、属性太复杂，有隐患
 
 public class Label extends HoldableMapEntity {
     private static Paint labelPaint;
@@ -57,7 +59,7 @@ public class Label extends HoldableMapEntity {
     private Path startPath;
     private Path stopPath;
 
-    //    是否已经转换过，防止无线递归
+    //    是否已经转换过，防止无限递归
     private boolean changed;
 
     public Label(Vertex start, Vertex stop, Type type) {
@@ -114,7 +116,7 @@ public class Label extends HoldableMapEntity {
                     startY = start.y + offset;
                     stopY = stop.y + offset;
                 }
-                if (!changed && ShapeUtils.pointInPath((startX + stopX) / 2, (startY + stopY) / 2, MapHelper.getInstance().cMap.shapePath)) {
+                if (!changed && ShapeUtils.pointInPath((startX + stopX) / 2, (startY + stopY) / 2, shapePath)) {
                     offset = -offset;
                     changed = true;
                     init();
@@ -147,16 +149,6 @@ public class Label extends HoldableMapEntity {
 
         }
 
-    }
-
-    public void setLength(int length) {
-        double v = Math.atan((stopX - startX) / (stopY - startY));
-        v = Math.abs(v);
-        float bc = (float) (length * Math.sin(v));
-        float ab = (float) (length * Math.cos(v));
-//        手动判断方向 几何
-        stop.x = stop.x > start.x ? start.x + bc : start.x - bc;
-        stop.y = stop.y > start.y ? start.y + ab : start.y - ab;
     }
 
     private void initEdgePath() {
@@ -269,12 +261,6 @@ public class Label extends HoldableMapEntity {
         }
         return (int) length;
 
-    }
-
-    public boolean inLabel(float x, float y) {
-        float x1 = startX + (stopX - startX) / 2;
-        float y1 = startY + (stopY - startY) / 2;
-        return getL(x, y, x1, y1) < 50;
     }
 
     public enum Type {

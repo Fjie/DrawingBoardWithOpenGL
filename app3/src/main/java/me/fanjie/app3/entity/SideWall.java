@@ -6,7 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 import me.fanjie.app3.ShapeUtils;
-import me.fanjie.app3.mapping.MapHelper;
+
+import static me.fanjie.app3.entity.CMap.shapePath;
 
 /**
  * Created by dell on 2017/1/7.
@@ -44,7 +45,7 @@ public class SideWall extends BaseMapEntity {
         startX = start.x + l * hS;
         startY = start.y + l * vS;
 
-        if (!ShapeUtils.pointInPath(startX, startY, MapHelper.getInstance().cMap.shapePath)) {
+        if (!ShapeUtils.pointInPath(startX, startY, shapePath)) {
             startX = start.x + -l * hS;
             startY = start.y + -l * vS;
         }
@@ -55,7 +56,7 @@ public class SideWall extends BaseMapEntity {
         stopX = stop.x + l * hS1;
         stopY = stop.y + l * vS1;
 
-        if (!ShapeUtils.pointInPath(stopX, stopY, MapHelper.getInstance().cMap.shapePath)) {
+        if (!ShapeUtils.pointInPath(stopX, stopY, shapePath)) {
             stopX = stop.x + -l * hS1;
             stopY = stop.y + -l * vS1;
         }

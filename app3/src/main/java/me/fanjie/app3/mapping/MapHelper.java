@@ -24,26 +24,18 @@ import me.fanjie.app3.mapping.mapper.SignMapper;
 /**
  * Created by dell on 2016/12/24.
  * 制图帮助类，根据设置步骤方法，动态配置代理，好像也没别的卵用
- * TODO 考虑是不是把绘制的任务弄到CMap模型里面去，这个类为什么要绘制？
  */
 
 public class MapHelper {
-
-    private static MapHelper mapHelper;
 
     public CMap cMap;
     private BaseMapper mapper;
     private Panel panel;
     private MapperCallback callback;
 
-    public static MapHelper getInstance() {
-        return mapHelper;
-    }
-
     public MapHelper(Panel panel, MapperCallback callback) {
         this.panel = panel;
         this.callback = callback;
-        mapHelper = this;
         panel.setMapHelper(this);
         cMap = new CMap();
     }
@@ -136,7 +128,6 @@ public class MapHelper {
         }
         return (IMapperSignApi) mapper;
     }
-
     //    制图步骤
     public enum MappingStep {
         //        定型

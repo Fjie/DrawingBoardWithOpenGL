@@ -6,6 +6,8 @@ import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Vertex;
 import me.fanjie.app3.mapping.Interface.MapperCallback;
 
+import static me.fanjie.app3.entity.CMap.shapePath;
+
 /**
  * Created by dell on 2017/1/18.
  */
@@ -26,18 +28,18 @@ public abstract class BaseMapper {
         this(cMap,panel,null);
     }
     protected void initDrawable() {
-        cMap.shapePath.reset();
+        shapePath.reset();
         Vertex vertex;
         int size = cMap.vertices.size();
         for (int i = 0; i < size; i++) {
             vertex = cMap.vertices.get(i);
             if (i == 0) {
-                cMap.shapePath.moveTo(vertex.x, vertex.y);
+                shapePath.moveTo(vertex.x, vertex.y);
             } else {
-                cMap.shapePath.lineTo(vertex.x, vertex.y);
+                shapePath.lineTo(vertex.x, vertex.y);
             }
         }
-        cMap.shapePath.close();
+        shapePath.close();
         panel.invalidate();
     }
 

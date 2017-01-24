@@ -25,9 +25,9 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
 
     @Override
     public void addGap() {
-        if (cMap.vertexHolder != null) {
+        if (holdenVertex != null) {
             addVertexGap();
-        } else if (cMap.edgeHolder != null) {
+        } else if (holdenEdge != null) {
             addEdgeGap();
         } else {
             showToast("请选中需要开缺的顶点或者边线");
@@ -37,12 +37,13 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
     @Override
     public void addShape(Shape shape) {
         cMap.vertices = shape.getVertices();
-        cMap.vertexHolder = null;
-        cMap.edgeHolder = null;
+        holdenVertex = null;
+        holdenEdge = null;
         initMapping();
         initDrawable();
     }
 
+    // TODO: 2017/1/24 实现太复杂，是否需要解离
     @Override
     public boolean onTouch(int action, float x, float y) {
         switch (action) {
@@ -97,6 +98,7 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
         }
     }
 
+    // TODO: 2017/1/24 算法有点复杂，有隐患
     private void addVertexGap() {
         //        带方向的偏移量
         double offsetX = holdenVertex.h.x - holdenVertex.x;
