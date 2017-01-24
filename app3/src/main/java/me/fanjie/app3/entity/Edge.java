@@ -15,7 +15,7 @@ import static me.fanjie.app3.BMath.getS;
  * Created by dell on 2016/12/24.
  */
 
-public class Edge extends MapEntity {
+public class Edge extends HoldableMapEntity {
 
     private static Paint edgePaint;
     private static Paint holdenEdgePaint;
@@ -77,11 +77,12 @@ public class Edge extends MapEntity {
         }
     }
 
-    public void drawSideWall(Canvas canvas, Paint downPaint, Paint upPaint) {
-        if (sideWall != null) {
-            sideWall.draw(canvas, downPaint, upPaint);
+    public void drawSideWall() {
+        if(sideWall!=null){
+            sideWall.draw();
         }
     }
+
     public Direction getDirection() {
         if (start.x == stop.x) {
             return Direction.VER;

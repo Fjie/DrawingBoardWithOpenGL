@@ -11,7 +11,7 @@ import static me.fanjie.app3.BMath.getL;
  * Created by dell on 2016/12/17.
  */
 
-public class Vertex extends MapEntity {
+public class Vertex extends HoldableMapEntity {
     private static final float ANGEL_RADIUS = 40;
     private static final float RADIUS = 15;
 

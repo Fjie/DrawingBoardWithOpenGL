@@ -1,6 +1,7 @@
 package me.fanjie.app3.entity;
 
-import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -11,11 +12,21 @@ import me.fanjie.app3.mapping.MapHelper;
  * Created by dell on 2017/1/7.
  */
 
-public class SideWall {
+public class SideWall extends BaseMapEntity {
+    private static Paint upPaint;
+    private static Paint downPaint;
+
+    static {
+        upPaint = new Paint(basePaint);
+        upPaint.setStrokeWidth(3);
+        upPaint.setStyle(Paint.Style.STROKE);
+        upPaint.setColor(Color.BLACK);
+        downPaint = new Paint(upPaint);
+        downPaint.setPathEffect(new DashPathEffect(new float[]{10, 10}, 0));
+    }
+
 
     private Type type;
-
-
     private float startX;
     private float startY;
     private float stopX;
@@ -54,14 +65,13 @@ public class SideWall {
         path.lineTo(stopX, stopY);
     }
 
-    public void draw(Canvas canvas, Paint downPaint, Paint upPaint) {
+    public void draw() {
         if (type == Type.UP) {
             canvas.drawPath(path, upPaint);
         } else {
             canvas.drawPath(path, downPaint);
         }
     }
-
 
     public enum Type {
         UP, DOWN, BOTH

@@ -1,32 +1,47 @@
 package me.fanjie.app3.entity;
 
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 /**
  * Created by dell on 2017/1/20.
  */
 
-public class PointSign {
+public class PointSign extends HoldableMapEntity {
+    private static Paint centerPaint;
+
+    static {
+        centerPaint = new Paint(basePaint);
+        centerPaint.setStyle(Paint.Style.STROKE);
+        centerPaint.setStrokeWidth(5);
+    }
+
     protected Vertex center;
-    private Path centerPath;
 
-    public PointSign(float x,float y) {
-        center = new Vertex(x,y);
+    public PointSign(float x, float y) {
+        center = new Vertex(x, y);
+    }
+
+    @Override
+    public boolean hold(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public void drawHolding() {
+
+    }
+
+    @Override
+    public void draw() {
         float l = 30;
-        centerPath = new Path();
-        centerPath.moveTo(x, y + l);
-        centerPath.lineTo(x, y - l);
-        centerPath.moveTo(x - l, y);
-        centerPath.lineTo(x + l, y);
+        canvas.drawLine(center.x, center.y + l, center.x, center.y - l, centerPaint);
+        canvas.drawLine(center.x + l, center.y, center.x - l, center.y, centerPaint);
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-        canvas.drawPath(centerPath, paint);
-    }
 
     public Vertex getCenter() {
         return center;
     }
+
+
 }

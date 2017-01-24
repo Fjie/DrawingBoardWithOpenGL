@@ -167,6 +167,35 @@
         android:visibility="gone">
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_add_side_wall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:text="下垂"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addDownWall"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="挡水"
+            android:onClick="addUpWall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+        <Button
+            android:text="挡垂分段"
+            android:onClick="slipUpDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_add_sign"
@@ -176,20 +205,6 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-
-        <Button
-            android:text="挡水"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="addDownWall"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="下垂"
-            android:onClick="addUpWall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
         <Button
             android:text="灶中"
             android:layout_width="wrap_content"

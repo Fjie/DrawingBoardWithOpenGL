@@ -59,16 +59,19 @@ public class MainActivity extends AppCompatActivity {
         steps.add(MapHelper.MappingStep.ANGEL);
         steps.add(MapHelper.MappingStep.LABEL_SIZE);
         steps.add(MapHelper.MappingStep.LABEL_DRAG);
+        steps.add(MapHelper.MappingStep.SIDE_WALL);
         steps.add(MapHelper.MappingStep.ADD_SIGN);
         titles.add("形状设计，选择顶点或边线开缺");
         titles.add("角度调整，选择顶点输入角度选择贴合角度的边");
         titles.add("尺寸调整，点击边线设置尺寸，选择两个顶点生成自由标注");
         titles.add("标注调整，拖动标注");
+        titles.add("下垂挡水，选中边线添加");
         titles.add("添加标记，选择边线设置挡水和下垂");
         operations.add(findViewById(R.id.ll_form));
         operations.add(findViewById(R.id.ll_angel));
         operations.add(findViewById(R.id.ll_size));
         operations.add(findViewById(R.id.ll_label));
+        operations.add(findViewById(R.id.ll_add_side_wall));
         operations.add(findViewById(R.id.ll_add_sign));
         nextStep(null);
 
@@ -140,11 +143,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addDownWall(View view) {
-        mapHelper.getSignApi().addSideWall(SideWall.Type.DOWN);
+        mapHelper.getSideWallApi().addSideWall(SideWall.Type.DOWN);
     }
 
     public void addUpWall(View view) {
-        mapHelper.getSignApi().addSideWall(SideWall.Type.UP);
+        mapHelper.getSideWallApi().addSideWall(SideWall.Type.UP);
+    }
+
+
+    public void slipUpDown(View view) {
+
     }
 
     public void addKitchen(View view) {
@@ -198,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         inputDialog.show();
 
     }
+
 
     interface DialogInputCallback {
         void input(int input);

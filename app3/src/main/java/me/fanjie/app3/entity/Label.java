@@ -15,7 +15,7 @@ import static me.fanjie.app3.BMath.getL;
  * Created by dell on 2017/1/3.
  */
 
-public class Label extends MapEntity {
+public class Label extends HoldableMapEntity {
     private static Paint labelPaint;
     private static Paint leadingLine;
     private static Paint holdenLabelPaint;

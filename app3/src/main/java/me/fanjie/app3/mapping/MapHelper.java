@@ -1,19 +1,14 @@
 package me.fanjie.app3.mapping;
 
 import android.graphics.Canvas;
-import android.util.Log;
-
-import java.util.Arrays;
 
 import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
-import me.fanjie.app3.entity.Edge;
-import me.fanjie.app3.entity.Label;
-import me.fanjie.app3.entity.MapEntity;
-import me.fanjie.app3.entity.Vertex;
+import me.fanjie.app3.entity.HoldableMapEntity;
 import me.fanjie.app3.mapping.Interface.IMapperAngelApi;
 import me.fanjie.app3.mapping.Interface.IMapperFormApi;
 import me.fanjie.app3.mapping.Interface.IMapperLabelApi;
+import me.fanjie.app3.mapping.Interface.IMapperSideWallApi;
 import me.fanjie.app3.mapping.Interface.IMapperSignApi;
 import me.fanjie.app3.mapping.Interface.IMapperSizeApi;
 import me.fanjie.app3.mapping.Interface.MapperCallback;
@@ -22,6 +17,7 @@ import me.fanjie.app3.mapping.mapper.BaseMapper;
 import me.fanjie.app3.mapping.mapper.FormMapper;
 import me.fanjie.app3.mapping.mapper.LabelDragMapper;
 import me.fanjie.app3.mapping.mapper.LabelSizeMapper;
+import me.fanjie.app3.mapping.mapper.SideWallMapper;
 import me.fanjie.app3.mapping.mapper.SignMapper;
 
 
@@ -32,7 +28,7 @@ import me.fanjie.app3.mapping.mapper.SignMapper;
  */
 
 public class MapHelper {
-    
+
     private static MapHelper mapHelper;
 
     public CMap cMap;
@@ -55,26 +51,30 @@ public class MapHelper {
     public boolean setStep(MappingStep step) {
         switch (step) {
             case FORM: {
-                mapper = new FormMapper(cMap,panel);
+                mapper = new FormMapper(cMap, panel);
                 return true;
             }
             case ANGEL: {
                 if (cMap.vertices.size() < 3) {
                     return false;
                 }
-                mapper = new AngelMapper(cMap,panel);
+                mapper = new AngelMapper(cMap, panel);
                 return true;
             }
             case LABEL_SIZE: {
-                mapper = new LabelSizeMapper(cMap,panel,callback);
+                mapper = new LabelSizeMapper(cMap, panel, callback);
                 return true;
             }
             case LABEL_DRAG: {
-                mapper = new LabelDragMapper(cMap,panel);
+                mapper = new LabelDragMapper(cMap, panel);
+                return true;
+            }
+            case SIDE_WALL:{
+                mapper = new SideWallMapper(cMap,panel,callback);
                 return true;
             }
             case ADD_SIGN: {
-                mapper = new SignMapper(cMap,panel);
+                mapper = new SignMapper(cMap, panel);
                 return true;
             }
 
@@ -83,7 +83,7 @@ public class MapHelper {
     }
 
     public boolean onPanelTouch(int action, float x, float y) {
-        return mapper.onTouch(action,x,y);
+        return mapper.onTouch(action, x, y);
     }
 
     public void drawing(Canvas canvas) {
@@ -91,86 +91,52 @@ public class MapHelper {
         if (size < 3) {
             return;
         }
-        MapEntity.setCanvas(canvas);
+        HoldableMapEntity.setCanvas(canvas);
         mapper.drawing();
-    }
-    public void drawingOld(Canvas canvas) {
-        Log.d("XXX", "cMap.vertices  = " + Arrays.toString(cMap.vertices.toArray()));
-        int size = cMap.vertices.size();
-        if (size < 3) {
-            return;
-        }
-        MapEntity.setCanvas(canvas);
-        mapper.drawing();
-
-        for (Edge e : cMap.edges) {
-            e.draw();
-//            e.drawLabel(canvas, DrawingOption.getLabelPaint(), DrawingOption.getTextPaint());
-            e.drawSideWall(canvas, DrawingOption.getLabelPaint(), DrawingOption.getLeadingLine());
-        }
-
-        for (Vertex v : cMap.vertices) {
-            v.draw();
-        }
-
-        if (cMap.vertexHolder != null) {
-//            cMap.vertexHolder.drawCircle(canvas, 20, DrawingOption.getHolderVertexPaint());
-        }
-
-        if (cMap.vertexAssistHolder != null) {
-//            cMap.vertexAssistHolder.drawCircle(canvas, 20, DrawingOption.getHolderVertexPaint());
-        }
-
-        for (Label l : cMap.vertexLabels) {
-//            l.drawLabel(canvas, DrawingOption.getLabelPaint(), DrawingOption.getLeadingLine(), DrawingOption.getTextPaint());
-        }
-
-        if (cMap.labelHolder != null) {
-//            cMap.labelHolder.drawLabel(canvas, DrawingOption.getHolderLabelPaint(), DrawingOption.getHolderLeadingLine(), DrawingOption.getHolderTextPaint());
-        }
-        if(cMap.pointSignKitChen !=null){
-            cMap.pointSignKitChen.draw(canvas, DrawingOption.getEdgePaint());
-        }
-        if(cMap.pointSignBasin != null){
-            cMap.pointSignBasin.draw(canvas, DrawingOption.getEdgePaint(), DrawingOption.getLeadingLine());
-        }
-
     }
 
     public IMapperFormApi getFormApi() {
-        if(mapper == null || !(mapper instanceof IMapperFormApi)){
+        if (mapper == null || !(mapper instanceof IMapperFormApi)) {
             throw new RuntimeException("兄弟你的步骤不对");
         }
         return (IMapperFormApi) mapper;
     }
 
     public IMapperAngelApi getAngelApi() {
-        if(mapper == null || !(mapper instanceof IMapperAngelApi)){
+        if (mapper == null || !(mapper instanceof IMapperAngelApi)) {
             throw new RuntimeException("兄弟你的步骤不对");
         }
         return (IMapperAngelApi) mapper;
     }
 
     public IMapperLabelApi getLabelApi() {
-        if(mapper == null || !(mapper instanceof IMapperLabelApi)){
+        if (mapper == null || !(mapper instanceof IMapperLabelApi)) {
             throw new RuntimeException("兄弟你的步骤不对");
         }
         return (IMapperLabelApi) mapper;
     }
 
     public IMapperSizeApi getSizeApi() {
-        if(mapper == null || !(mapper instanceof IMapperSizeApi)){
+        if (mapper == null || !(mapper instanceof IMapperSizeApi)) {
             throw new RuntimeException("兄弟你的步骤不对");
         }
         return (IMapperSizeApi) mapper;
     }
 
+    public IMapperSideWallApi getSideWallApi() {
+        if (mapper == null || !(mapper instanceof IMapperSideWallApi)) {
+            throw new RuntimeException("兄弟你的步骤不对");
+        }
+        return (IMapperSideWallApi) mapper;
+    }
+
     public IMapperSignApi getSignApi() {
-        if(mapper == null || !(mapper instanceof IMapperSignApi)){
+        if (mapper == null || !(mapper instanceof IMapperSignApi)) {
             throw new RuntimeException("兄弟你的步骤不对");
         }
         return (IMapperSignApi) mapper;
     }
+
     //    制图步骤
     public enum MappingStep {
         //        定型
@@ -181,6 +147,8 @@ public class MapHelper {
         LABEL_SIZE,
         //        标注定点
         LABEL_DRAG,
+        //        添加挡水下垂
+        SIDE_WALL,
         //        添加标记
         ADD_SIGN
     }
