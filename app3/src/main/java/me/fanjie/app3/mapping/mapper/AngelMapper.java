@@ -6,16 +6,17 @@ import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Vertex;
-import me.fanjie.app3.mapping.Interface.IMapperAngelApi;
+import me.fanjie.app3.mapping.Interface.mapperApi.AngelApi;
 
 /**
  * Created by dell on 2017/1/18.
  */
-public class AngelMapper extends BaseMapper implements IMapperAngelApi{
+public class AngelMapper extends BaseMapper implements AngelApi {
     private Vertex holdenVertex;
     public AngelMapper(CMap cMap, Panel panel) {
         super(cMap, panel);
     }
+
 
     @Override
     public boolean setAngel(int angel, Edge.Direction direction) {
@@ -36,6 +37,7 @@ public class AngelMapper extends BaseMapper implements IMapperAngelApi{
             }
             holdenVertex.setAngel(angel);
             initDrawable();
+            done();
             return true;
         }
         return false;

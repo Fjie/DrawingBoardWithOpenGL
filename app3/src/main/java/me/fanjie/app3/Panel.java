@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -32,8 +31,8 @@ public class Panel extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
     }
 
     @Override
@@ -41,8 +40,6 @@ public class Panel extends View {
         super.onDraw(canvas);
         canvas.translate(dx2 + dx, dy2 + dy);
         if (scale > 0) {
-            Log.d("XXX", "scale = " + scale);
-            Log.d("XXX", "px = " + px + ",py = " + py);
             canvas.scale(scale, scale, px, py);
         }
         if (mapHelper != null) {

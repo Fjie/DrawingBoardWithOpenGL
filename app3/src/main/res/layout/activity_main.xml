@@ -19,6 +19,35 @@
         android:onClick="nextStep"
         android:text="下一步" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:onClick="preStep"
+        android:text="上一步" />
+
+    <LinearLayout
+        android:layout_gravity="right"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:onClick="undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_revert"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:onClick="redo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_directions"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/ll_form"
@@ -113,9 +142,9 @@
         android:visibility="gone">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
 
             <Button
@@ -133,27 +162,28 @@
                 android:text="垂直标注" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:visibility="gone"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
 
             <EditText
+                android:id="@+id/et_input_label_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned"
+                android:layout_weight="1"
                 android:digits="0123456789"
-                android:id="@+id/et_input_label_size"
                 android:hint="请据实输入您的尺寸"
-                android:layout_weight="1" />
+                android:inputType="numberSigned" />
 
             <Button
-                android:onClick="setLabelSize"
-                android:text="确定"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:onClick="setLabelSize"
+                android:text="确定" />
         </LinearLayout>
 
     </LinearLayout>
@@ -167,6 +197,7 @@
         android:visibility="gone">
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_add_side_wall"
         android:layout_width="match_parent"
@@ -176,29 +207,91 @@
         android:visibility="gone">
 
         <Button
-            android:text="下垂"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="addDownWall"
-            android:layout_weight="1" />
+            android:text="下垂" />
 
         <Button
-            android:text="挡水"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:onClick="addUpWall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:text="挡水" />
+
         <Button
-            android:text="挡垂分段"
-            android:onClick="slipUpDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="slipUpDown"
+            android:text="挡垂分段" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_add_sign"
+        android:id="@+id/ll_add_point_sign"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addKitchen"
+                android:text="灶中" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addBasin"
+                android:text="盆中" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addHole"
+                android:text="包管位" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addSignVerLabel"
+                android:text="垂直标注" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addSignHorLabel"
+                android:text="水平标注" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_add_line_sign"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -206,17 +299,35 @@
         android:visibility="gone">
 
         <Button
-            android:text="灶中"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="addKitchen"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="addBreakLine"
+            android:text="断开线" />
 
         <Button
-            android:text="盆中"
-            android:onClick="addBasin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="addDivideLine"
+            android:text="落差线" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <Button
+            android:text="提交图纸"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="mapperDone"
             android:layout_weight="1" />
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package me.fanjie.app3.mapping.Interface;
+package me.fanjie.app3.mapping.Interface.mapperApi;
 
 import me.fanjie.app3.entity.Edge;
 
@@ -6,7 +6,7 @@ import me.fanjie.app3.entity.Edge;
  * Created by dell on 2016/12/30.
  */
 
-public interface IMapperAngelApi {
+public interface AngelApi {
     /**
      * 选中顶点后设置角度
      * @param angel 角度值0~360

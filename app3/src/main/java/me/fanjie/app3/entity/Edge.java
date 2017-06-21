@@ -4,8 +4,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import me.fanjie.app3.entity.label.EdgeLabel;
+
 import static me.fanjie.app3.BMath.getL;
 import static me.fanjie.app3.BMath.getS;
+import static me.fanjie.app3.ShapeUtils.setLineSize;
 
 /**
  * Created by dell on 2016/12/24.
@@ -32,7 +35,7 @@ public class Edge extends HoldableMapEntity {
     public Vertex start;
     public Vertex stop;
 
-    public Label label;
+    public EdgeLabel label;
     private SideWall sideWall;
 
     public Edge(Vertex start, Vertex stop) {
@@ -42,14 +45,24 @@ public class Edge extends HoldableMapEntity {
 
     public void initLabel() {
         if (label == null) {
-            label = new Label(start, stop, Label.Type.EDGE);
+            label = new EdgeLabel(start, stop);
         } else {
             label.init();
         }
     }
 
+    public void initSideWall(){
+        if(sideWall!=null){
+            sideWall.init();
+        }
+    }
+
     public void addSideWall(SideWall.Type type) {
-        sideWall = new SideWall(start, stop, type);
+        if(type!=null) {
+            sideWall = new SideWall(start, stop, type);
+        }else {
+            sideWall = null;
+        }
     }
 
     @Override
@@ -94,24 +107,13 @@ public class Edge extends HoldableMapEntity {
 
     public boolean setSize(int size, float x, float y) {
         if (getL(start.x, start.y, x, y) < 40) {
-            double v = Math.atan((start.x - stop.x) / (start.y - stop.y));
-            v = Math.abs(v);
-            float bc = (float) (size * Math.sin(v));
-            float ab = (float) (size * Math.cos(v));
-            start.x = start.x > stop.x ? stop.x + bc : stop.x - bc;
-            start.y = start.y > stop.y ? stop.y + ab : stop.y - ab;
+            setLineSize(stop,start,size);
         } else if (getL(stop.x, stop.y, x, y) < 40) {
-            double v = Math.atan((stop.x - start.x) / (stop.y - start.y));
-            v = Math.abs(v);
-            float bc = (float) (size * Math.sin(v));
-            float ab = (float) (size * Math.cos(v));
-            stop.x = stop.x > start.x ? start.x + bc : start.x - bc;
-            stop.y = stop.y > start.y ? start.y + ab : start.y - ab;
+            setLineSize(start,stop,size);
         } else {
             return false;
         }
         return true;
-
     }
 
     @Override
@@ -134,6 +136,14 @@ public class Edge extends HoldableMapEntity {
         RectF stopRectF = new RectF(stop.x - l, stop.y - l, stop.x + l, stop.y + l);
         canvas.drawRect(startRectF, settingSizeVertexPaint);
         canvas.drawRect(stopRectF, settingSizeVertexPaint);
+    }
+
+    public double getLength(){
+        return getL(start.x,start.y,stop.x,stop.y);
+    }
+
+    public SideWall getSideWall() {
+        return sideWall;
     }
 
     //    边线方向，横竖

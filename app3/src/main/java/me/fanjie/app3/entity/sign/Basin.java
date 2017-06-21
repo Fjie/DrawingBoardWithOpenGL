@@ -1,4 +1,4 @@
-package me.fanjie.app3.entity;
+package me.fanjie.app3.entity.sign;
 
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
@@ -8,22 +8,21 @@ import android.graphics.RectF;
  * Created by dell on 2017/1/13.
  */
 
-public class PointSignBasin extends PointSign {
+public class Basin extends RangePointSign {
     private static Paint edgePaint;
     static {
         edgePaint = new Paint(basePaint);
         edgePaint.setStyle(Paint.Style.STROKE);
         edgePaint.setPathEffect(new DashPathEffect(new float[]{10, 10}, 0));
     }
-    private float width;
-    private float height;
-    private float round;
 
-    public PointSignBasin(float x, float y, float width, float height, float round) {
-        super(x, y);
-        this.width = width;
-        this.height = height;
-        this.round = round;
+    private Type type;
+
+    public Basin(float x, float y, Type type,int rAngel, int width, int height) {
+        super(x, y, rAngel, width, height);
+        this.type = type;
+        super.title = (type == Type.UP ? "台上盆":"台下盆");
+
     }
 
     public void draw() {
@@ -31,6 +30,10 @@ public class PointSignBasin extends PointSign {
         float w = width / 2;
         float h = height / 2;
         RectF rectF = new RectF(center.x - w, center.y - h, center.x + w, center.y + h);
-        canvas.drawRoundRect(rectF, round, round, edgePaint);
+        canvas.drawRoundRect(rectF, rAngel, rAngel, edgePaint);
+    }
+
+    public enum Type{
+        UP,DOWN
     }
 }

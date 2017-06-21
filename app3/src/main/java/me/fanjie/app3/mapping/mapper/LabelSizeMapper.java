@@ -5,17 +5,18 @@ import android.view.MotionEvent;
 import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
-import me.fanjie.app3.entity.Label;
 import me.fanjie.app3.entity.Vertex;
-import me.fanjie.app3.mapping.Interface.IMapperLabelApi;
-import me.fanjie.app3.mapping.Interface.IMapperSizeApi;
-import me.fanjie.app3.mapping.Interface.MapperCallback;
+import me.fanjie.app3.entity.label.DragHorVertexLabel;
+import me.fanjie.app3.entity.label.DragVerVertexLabel;
+import me.fanjie.app3.entity.label.DragVertexLabel;
+import me.fanjie.app3.mapping.Interface.mapperApi.LabelApi;
+import me.fanjie.app3.mapping.Interface.mapperApi.SizeApi;
 
 /**
  * Created by dell on 2017/1/18.
  */
 
-public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapperLabelApi {
+public class LabelSizeMapper extends BaseMapper implements SizeApi, LabelApi {
     private Edge holdenEdge;
     private Edge settingSizeEdge;
     private Vertex holdenVertex;
@@ -28,16 +29,28 @@ public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapp
         for (Edge edge : cMap.edges) {
             edge.initLabel();
         }
+        done();
         initDrawable();
     }
 
     @Override
-    public void addVertexLabel(Label.Type type) {
+    public void addHorVertexLabel() {
         if (holdenVertex != null && assistHoldenVertex != null) {
-            cMap.vertexLabels.add(new Label(holdenVertex, assistHoldenVertex, type));
+            cMap.vertexLabels.add(new DragHorVertexLabel(holdenVertex,assistHoldenVertex));
+            done();
             initDrawable();
         }
     }
+
+    @Override
+    public void addVerVertexLabel() {
+        if (holdenVertex != null && assistHoldenVertex != null) {
+            cMap.vertexLabels.add(new DragVerVertexLabel(holdenVertex,assistHoldenVertex));
+            done();
+            initDrawable();
+        }
+    }
+
 
     @Override
     public boolean setSize(int length) {
@@ -88,14 +101,20 @@ public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapp
                 }
             }
             if (holdenEdge != null && callback != null) {
-                callback.onEdgeClick(holdenEdge);
+                callback.onEdgeClick();
             }
         }
     }
 
-    private void settingSize(float x,float y) {
+    @Override
+    protected void onStepChange() {
+
+    }
+
+    private void settingSize(float x, float y) {
         if (holdenEdge.setSize(edgeSize, x, y)) {
             initLabel();
+            done();
         }
         settingSizeEdge = null;
         holdenEdge = null;
@@ -110,7 +129,7 @@ public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapp
         for (Vertex v : cMap.vertices) {
             v.draw();
         }
-        for (Label l : cMap.vertexLabels) {
+        for (DragVertexLabel l : cMap.vertexLabels) {
             l.draw();
         }
         if (holdenEdge != null) {
@@ -133,7 +152,7 @@ public class LabelSizeMapper extends BaseMapper implements IMapperSizeApi, IMapp
                 edge.initLabel();
             }
         }
-        for (Label label : cMap.vertexLabels) {
+        for (DragVertexLabel label : cMap.vertexLabels) {
             label.init();
         }
     }

@@ -3,8 +3,8 @@ package me.fanjie.app3.entity;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.Path;
 
+import me.fanjie.app3.CPath;
 import me.fanjie.app3.ShapeUtils;
 
 import static me.fanjie.app3.entity.CMap.shapePath;
@@ -27,23 +27,26 @@ public class SideWall extends BaseMapEntity {
     }
 
 
+    private Vertex start;
+    private Vertex stop;
     private Type type;
-    private float startX;
-    private float startY;
-    private float stopX;
-    private float stopY;
 
-    private Path path;
+    private CPath path;
+
 
     public SideWall(Vertex start, Vertex stop, Type type) {
-
+        this.start = start;
+        this.stop = stop;
         this.type = type;
+        init();
+    }
+
+    public void init() {
         float l = 20;
         float hS = (start.h.x - start.x) / Math.abs(start.h.x - start.x);
         float vS = (start.v.y - start.y) / Math.abs(start.v.y - start.y);
-
-        startX = start.x + l * hS;
-        startY = start.y + l * vS;
+        float startX = start.x + l * hS;
+        float startY = start.y + l * vS;
 
         if (!ShapeUtils.pointInPath(startX, startY, shapePath)) {
             startX = start.x + -l * hS;
@@ -52,16 +55,15 @@ public class SideWall extends BaseMapEntity {
 
         float hS1 = (stop.h.x - stop.x) / Math.abs(stop.h.x - stop.x);
         float vS1 = (stop.v.y - stop.y) / Math.abs(stop.v.y - stop.y);
-
-        stopX = stop.x + l * hS1;
-        stopY = stop.y + l * vS1;
+        float stopX = stop.x + l * hS1;
+        float stopY = stop.y + l * vS1;
 
         if (!ShapeUtils.pointInPath(stopX, stopY, shapePath)) {
             stopX = stop.x + -l * hS1;
             stopY = stop.y + -l * vS1;
         }
 
-        path = new Path();
+        path = new CPath();
         path.moveTo(startX, startY);
         path.lineTo(stopX, stopY);
     }
@@ -74,7 +76,11 @@ public class SideWall extends BaseMapEntity {
         }
     }
 
+    public Type getType() {
+        return type;
+    }
+
     public enum Type {
-        UP, DOWN, BOTH
+        UP, DOWN
     }
 }

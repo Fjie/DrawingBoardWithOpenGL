@@ -6,7 +6,7 @@ import me.fanjie.app3.Panel;
 import me.fanjie.app3.entity.CMap;
 import me.fanjie.app3.entity.Edge;
 import me.fanjie.app3.entity.Vertex;
-import me.fanjie.app3.mapping.Interface.IMapperFormApi;
+import me.fanjie.app3.mapping.Interface.mapperApi.FormApi;
 import me.fanjie.app3.mapping.initShape.Shape;
 
 import static me.fanjie.app3.ToastUtils.showToast;
@@ -14,7 +14,7 @@ import static me.fanjie.app3.ToastUtils.showToast;
 /**
  * Created by dell on 2017/1/18.
  */
-public class FormMapper extends BaseMapper implements IMapperFormApi {
+public class FormMapper extends BaseMapper implements FormApi {
 
     private Edge holdenEdge;
     private Vertex holdenVertex;
@@ -41,6 +41,13 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
         holdenEdge = null;
         initMapping();
         initDrawable();
+        done();
+    }
+
+    @Override
+    protected void onStepChange() {
+        holdenEdge = null;
+        holdenVertex = null;
     }
 
     // TODO: 2017/1/24 实现太复杂，是否需要解离
@@ -71,6 +78,7 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
                     holdenVertex.y = y;
                     holdenVertex.v.x = x;
                     holdenVertex.h.y = y;
+                    beDrag = true;
 
                 } else if (holdenEdge != null) {
                     if (holdenEdge.getDirection() == Edge.Direction.HOR) {
@@ -80,8 +88,16 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
                         holdenEdge.start.x = x;
                         holdenEdge.stop.x = x;
                     }
+                    beDrag = true;
                 }
                 initDrawable();
+                break;
+            }
+            case MotionEvent.ACTION_UP:{
+                if(beDrag){
+                    done();
+                    beDrag = false;
+                }
                 break;
             }
         }
@@ -139,6 +155,7 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
         initMapping();
         initDrawable();
         holdenVertex = null;
+        done();
     }
 
     // 边线开缺
@@ -183,6 +200,7 @@ public class FormMapper extends BaseMapper implements IMapperFormApi {
         initMapping();
         initDrawable();
         holdenEdge = null;
+        done();
     }
 
     private void initMapping() {
